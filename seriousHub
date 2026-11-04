@@ -1,3 +1,23 @@
+local arguments = table.pack(...)
+local sharedEnv = getgenv and getgenv() or _G
+local previous = rawget(sharedEnv, 'serious.lua')
+
+if type(previous) == 'table' and (previous.status == 'starting' or previous.status == 'entry_returned') then
+    return previous
+end
+if rawget(sharedEnv, 'serious_loaded') == true then
+    return previous
+end
+
+local control = {
+    status = 'starting',
+    started = os.clock(),
+    error = nil,
+    stopped = false,
+}
+
+sharedEnv['serious.lua - rivals'] = control
+
 local previousLoaded = rawget(sharedEnv, 'UE_LOADED')
 local previousLibrary = rawget(sharedEnv, 'Library')
 local previousOptions = rawget(sharedEnv, 'Options')
